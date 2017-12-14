@@ -82,7 +82,7 @@ class Config:
         if not os.path.exists(main_directory):
             os.makedirs(main_directory)
 
-        directory = os.path.join(main_directory, str(parser.parse(datetime.now().isoformat())))
+        directory = os.path.join(main_directory, str(parser.parse(datetime.now().isoformat())).replace(":", "-"))
         if not os.path.exists(directory):
             os.makedirs(directory)
             return directory
