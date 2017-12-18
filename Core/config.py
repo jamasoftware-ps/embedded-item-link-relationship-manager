@@ -19,6 +19,7 @@ class Config:
         self.testCaseStepItemTypeID = None
         self.relationshipTypeID = None
         self.testCaseField = ""
+        self.projectID = None
 
         self.credentialFile = "credentials.cfg"
         self.config = ConfigParser.RawConfigParser()

@@ -40,7 +40,12 @@ A *logs* directory is created/updated every time the application is run. Within 
 Please note that this script is distrubuted as-is as an example and will likely require modification to work for your specific use-case. Jama Support will not assist with the use or modification of the script.
 
 ## Before you begin
-- Install Python 3 and the requests library.[Python](https://www.python.org/)and[Requests](http://docs.python-requests.org/en/latest/)
+- Install Python 2.7 or newer
+- Verify pip is installed (located under Scripts in your Python executable directory). If not, install pip
+- Install the following packages using pip:
+    * requests
+    * python-dateutil
+    * bs4
 
 ## Setup
 a. As always, set up a test environment and project to test the script.
