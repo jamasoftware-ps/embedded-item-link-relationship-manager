@@ -1,8 +1,10 @@
+import logging
+
+from bs4 import BeautifulSoup
+from dateutil import parser
+
 from config import Config
 from jamaClient import JamaClient
-from bs4 import BeautifulSoup
-import logging
-from dateutil import parser
 
 
 class Process:
@@ -190,17 +192,21 @@ class Process:
         success = None
         for relationship in relationships:
             relationshipID = self.jama_client.post_relationship(relationship)
-            try:
-                relationship_id = int(relationshipID)
-                if relationship_id != None:
-                    if success == None:
-                        success = True
-                    self.jama_config.successLogger.log(logging.INFO, "Created relationship [" + str(relationship_id) + "] for item [" + str(itemID) + "]")
-                    self.successfulPostRelationshipCount = self.successfulPostRelationshipCount + 1
-            except Exception as e:
-                success = False
-                self.jama_config.failureLogger.log(logging.ERROR, "Failed to create relationship [" + str(relationship) + "] for item [" + str(itemID) + "] due to [" + relationshipID + "]")
-                self.failedToPostRelationshipCount = self.failedToPostRelationshipCount + 1
+            if relationshipID == None:
+                self.jama_config.successLogger.log(logging.WARNING, "Relationship [" + str(relationship) + "] already exists.")
+                self.successfulPostRelationshipCount = self.successfulPostRelationshipCount + 1
+            else:
+                try:
+                    relationship_id = int(relationshipID)
+                    if relationship_id != None:
+                        if success == None:
+                            success = True
+                        self.jama_config.successLogger.log(logging.INFO, "Created relationship [" + str(relationship_id) + "] for item [" + str(itemID) + "]")
+                        self.successfulPostRelationshipCount = self.successfulPostRelationshipCount + 1
+                except Exception as e:
+                    success = False
+                    self.jama_config.failureLogger.log(logging.ERROR, "Failed to create relationship [" + str(relationship) + "] for item [" + str(itemID) + "] due to [" + e.message + "]")
+                    self.failedToPostRelationshipCount = self.failedToPostRelationshipCount + 1
         return success
 
 

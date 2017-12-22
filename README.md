@@ -46,11 +46,12 @@ Please note that this script is distrubuted as-is as an example and will likely 
     * requests
     * python-dateutil
     * bs4
+    * ConfigParser
 
 ## Setup
 a. As always, set up a test environment and project to test the script.
 
-b. Rename the credentials.cfg.dst to credentials.cfg and fill in the following fields:
+b. Rename credentials.cfg.dst to credentials.cfg and fill in the following fields:
    1. __Required__
         - ```baseURL``` - e.g. https://jama-instance.jamacloud.com 
         - ```clientID```

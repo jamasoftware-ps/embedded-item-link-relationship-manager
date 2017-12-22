@@ -3,10 +3,17 @@ import ConfigParser
 import os
 from datetime import datetime
 from dateutil import parser
+import sys
+import platform
+
 
 
 class Config:
     def __init__(self):
+        self.file_separator = "/" if platform.system().__contains__("Windows") == False else "\\"
+        self.credentialFile = str(os.getcwd()) + self.file_separator + "credentials.cfg"
+        self.last_run_time_file = str(os.getcwd()) + self.file_separator + "Script" + self.file_separator + "last_run.cfg"
+
         self.logger_directory = self.setup_logger_directory()
         self.successLoggerFile = os.path.join(self.logger_directory, 'updates.log')
         self.failureLoggerFile = os.path.join(self.logger_directory, 'errors.log')
@@ -21,7 +28,6 @@ class Config:
         self.testCaseField = ""
         self.projectID = None
 
-        self.credentialFile = "credentials.cfg"
         self.config = ConfigParser.RawConfigParser()
         self.load()
 
@@ -33,7 +39,6 @@ class Config:
         self.auth = (self.clientID, self.clientSecret)
         self.verify_ssl = True
 
-        self.last_run_time_file = "last_run.cfg"
         self.last_run_time = self.load_last_run_time()
         if self.last_run_time is not None:
             self.last_run_time = parser.parse(self.last_run_time)
@@ -47,7 +52,7 @@ class Config:
             self.clientSecret = config.get("CREDENTIALS", "clientSecret")
             self.relationshipTypeID = config.get("CREDENTIALS", "relationshipTypeID")
             self.testCaseStepItemTypeID = config.get("CREDENTIALS", "itemTypeID")
-            self.testCaseField = config.get("CREDENTIALS", "testCaseField")
+            self.testCaseField = config.get("CREDENTIALS", "fieldWithLinks")
             if self.testCaseField != "description":
                 self.testCaseField = self.testCaseField + "$"
             try:
@@ -56,14 +61,16 @@ class Config:
                 self.projectID = None
 
         except Exception as e:
-            print 'Unable to open or read credentials file due to [' + str(e.message) + ']'
-            print 'Create a file named "credentials.properties" that contains the following parameters:'
-            print 'baseURL:https://{base_url}'
-            print 'clientID:your_client_ID'
-            print 'clientSecret:your_client_Secret'
-            print 'itemTypeID:test_case_step_itemType_ID'
-            print 'relationshipID:relationship_type_ID'
-            print 'projectID:projectID (optional)'
+            self.failureLogger.log(logging.ERROR, 'Unable to open or read credentials file due to [' + str(e.message) + ']')
+            self.failureLogger.log(logging.ERROR, 'Create a file named "credentials.cfg" that contains the following parameters:')
+            self.failureLogger.log(logging.ERROR, 'baseURL=your-jama-instance.jamacloud.com')
+            self.failureLogger.log(logging.ERROR, 'clientID=your_client_ID')
+            self.failureLogger.log(logging.ERROR, 'clientSecret=your_client_Secret')
+            self.failureLogger.log(logging.ERROR, 'itemTypeID=120')
+            self.failureLogger.log(logging.ERROR, 'relationshipID=13')
+            self.failureLogger.log(logging.ERROR, 'field=expected_results')
+            self.failureLogger.log(logging.ERROR, 'projectID=projectID (optional)')
+            exit(1)
 
     def setup_logger(self, name, log_file, level):
         formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')

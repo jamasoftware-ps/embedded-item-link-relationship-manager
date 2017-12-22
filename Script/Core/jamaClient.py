@@ -20,6 +20,7 @@ class JamaClient:
 
 
     def post_relationship(self, relationshipJSON):
+        self.updateAccessToken()
         headers = {
             "Authorization": "Bearer " + self.accessToken,
             "content-type": "application/json"
@@ -43,6 +44,7 @@ class JamaClient:
 
 
     def delete_relationship(self, relationshipID):
+        self.updateAccessToken()
         header = {"Authorization": "Bearer " + self.accessToken}
         url = self.config.restURL + "relationships/" + str(relationshipID)
         try:
@@ -131,9 +133,6 @@ class JamaClient:
 
         return all_results
 
-
-    def delay(self):
-        time.sleep(self.seconds)
 
     def setConfig(self, jama_config):
         self.config = jama_config
